@@ -56,6 +56,8 @@ public class ArticleAPI {
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response ajouter(@FormParam("nom") String nom,@FormParam("prix") String prix) {
+		System.out.println(nom);
+		System.out.println(prix);
 		try {
 			Factory.getArticleDAO().insert(new Article(Double.valueOf(prix),nom));
 			return Response.status(201).header("Access-Control-Allow-Origin", "*").build();
@@ -65,14 +67,18 @@ public class ArticleAPI {
 		}
 		
 	}
-	
-	@DELETE @Path("/{id: \\d+}")
+	//
+	// annotation delete ne fonctionne avec angular (headers)
+	@GET 
+	@Path("/delete/{id: \\d+}")
 	public Response supprimerArticle(@PathParam("id") int id) {
 		try {
+			System.out.println("in try");
 			Factory.getArticleDAO().delete(id);
-			return Response.status(200).header("Access-Control-Allow-Origin", "*").build();
+			return Response.status(204).header("Access-Control-Allow-Origin", "*").build();
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("in catch");
+			System.out.println(e.getMessage());
 			return Response.status(404).header("Access-Control-Allow-Origin", "*").build();
 		}
 	}
