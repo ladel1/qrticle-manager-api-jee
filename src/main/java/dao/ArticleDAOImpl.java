@@ -21,6 +21,7 @@ public class ArticleDAOImpl implements ArticleDAO {
 			cnx.close();
 			return a;
 		}
+		cnx.close();
 		return null;
 	}
 
@@ -30,7 +31,33 @@ public class ArticleDAOImpl implements ArticleDAO {
 		PreparedStatement  stmt =cnx.prepareStatement("INSERT INTO articles (nom,price) VALUES(?,?)");
 		stmt.setString(1, article.getNom());
 		stmt.setDouble(2, article.getPrix());
-		stmt.executeUpdate();		
+		stmt.executeUpdate();	
+		stmt.close();
+		cnx.close();
+	}
+
+	@Override
+	public void delete(int pk) throws SQLException {
+		Connection cnx = ConnectionProvider.getConnection();
+		PreparedStatement  stmt =cnx.prepareStatement("DELETE FROM articles WHERE id = ?");
+		stmt.setInt(1, pk);
+		stmt.executeUpdate();	
+		stmt.close();
+		cnx.close();
+		
+	}
+
+	@Override
+	public void update(Article article) throws SQLException {
+		Connection cnx = ConnectionProvider.getConnection();
+		PreparedStatement  stmt =cnx.prepareStatement("UPDATE articles SET nom= ?,price = ? WHERE id = ?");
+		stmt.setString(1, article.getNom());
+		stmt.setDouble(2, article.getPrix());
+		stmt.setDouble(3, article.getId());
+		stmt.executeUpdate();	
+		stmt.close();
+		cnx.close();
+		
 	}
 
 }

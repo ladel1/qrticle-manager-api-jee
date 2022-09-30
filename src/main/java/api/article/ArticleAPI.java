@@ -36,6 +36,12 @@ public class ArticleAPI {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getArticles(@PathParam("id") int id) {		
 		try {			
+			// 200
+			/**
+			 * HTTP
+			 * Headers 
+			 * Body json
+			 */
 			return Response.ok(Factory.getArticleDAO().selectOne(id)).header("Access-Control-Allow-Origin", "*").build();
 		} catch (SQLException e) {
 			return null;
@@ -43,25 +49,38 @@ public class ArticleAPI {
 	}
 	
 	@POST
-	public String ajouter(@FormParam("title") String title,@FormParam("price") String price) {
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response ajouter(@FormParam("nom") String nom,@FormParam("prix") String prix) {
 		try {
-			Factory.getArticleDAO().insert(new Article(Double.valueOf(price),title));
-			return "ok";
+			Factory.getArticleDAO().insert(new Article(Double.valueOf(prix),nom));
+			return Response.status(200).header("Access-Control-Allow-Origin", "*").build();
 		} catch (Exception e) {
 			e.printStackTrace();
-			return "notok";
+			return Response.status(404).header("Access-Control-Allow-Origin", "*").build();
 		}
 		
 	}
 	
 	@DELETE @Path("/{id: \\d+}")
-	public String supprimerArticle(@PathParam("id") int id) {
-		return "ok";
+	public Response supprimerArticle(@PathParam("id") int id) {
+		try {
+			Factory.getArticleDAO().delete(id);
+			return Response.status(200).header("Access-Control-Allow-Origin", "*").build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(404).header("Access-Control-Allow-Origin", "*").build();
+		}
 	}
 	
-	@PUT @Path("/{id: \\d+}")
-	public String modifierArticle(@PathParam("id") int id,@FormParam("nom") String nom) {
-		return "ok "+nom;
+	@PUT
+	public Response modifierArticle(@FormParam("id") int id,@FormParam("nom") String nom,@FormParam("prix") String prix) {
+		try {
+			Factory.getArticleDAO().update(new Article(id,Double.valueOf(prix),nom));
+			return Response.status(200).header("Access-Control-Allow-Origin", "*").build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return Response.status(404).header("Access-Control-Allow-Origin", "*").build();
+		}
 	}
 	
 }
