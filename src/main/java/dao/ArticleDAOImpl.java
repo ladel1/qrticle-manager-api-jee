@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import api.bo.Article;
 import tools.ConnectionProvider;
@@ -58,6 +60,19 @@ public class ArticleDAOImpl implements ArticleDAO {
 		stmt.close();
 		cnx.close();
 		
+	}
+
+	@Override
+	public List<Article> selectAll() throws SQLException {
+		List<Article> articles = new ArrayList<Article>();
+		Connection cnx = ConnectionProvider.getConnection();
+		PreparedStatement  stmt =cnx.prepareStatement("SELECT * FROM articles");
+		ResultSet  rs =stmt.executeQuery();		
+		while(rs.next()) {
+			articles.add(new Article(rs.getInt("id"),rs.getDouble("price"),rs.getString("nom")));
+		}
+		cnx.close();
+		return articles;
 	}
 
 }

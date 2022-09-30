@@ -19,22 +19,27 @@ import dao.Factory;
 @Path("/articles")
 public class ArticleAPI {
 	
-//	@GET
-//	@Produces(MediaType.APPLICATION_JSON)
-//	public Response getArticles() {
-//		Article [] articles = {
-//				new Article(1, 800,"Samsung" ),
-//				new Article(2, 900,"Iphone" ),
-//				new Article(3, 600,"Huawei" )
-//		};
-//		return Response.ok(articles);
-//	}
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getArticles() {
+		try {			
+			// 200
+			/**
+			 * HTTP
+			 * Headers 
+			 * Body json
+			 */
+			return Response.ok(Factory.getArticleDAO().selectAll()).header("Access-Control-Allow-Origin", "*").build();
+		} catch (SQLException e) {
+			return Response.status(404).header("Access-Control-Allow-Origin", "*").build();
+		}
+	}
 	
 	
 	@GET 
 	@Path("/{id: \\d+}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getArticles(@PathParam("id") int id) {		
+	public Response getArticle(@PathParam("id") int id) {		
 		try {			
 			// 200
 			/**
@@ -44,7 +49,7 @@ public class ArticleAPI {
 			 */
 			return Response.ok(Factory.getArticleDAO().selectOne(id)).header("Access-Control-Allow-Origin", "*").build();
 		} catch (SQLException e) {
-			return null;
+			return Response.status(404).header("Access-Control-Allow-Origin", "*").build();
 		}
 	}
 	
@@ -53,7 +58,7 @@ public class ArticleAPI {
 	public Response ajouter(@FormParam("nom") String nom,@FormParam("prix") String prix) {
 		try {
 			Factory.getArticleDAO().insert(new Article(Double.valueOf(prix),nom));
-			return Response.status(200).header("Access-Control-Allow-Origin", "*").build();
+			return Response.status(201).header("Access-Control-Allow-Origin", "*").build();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return Response.status(404).header("Access-Control-Allow-Origin", "*").build();
